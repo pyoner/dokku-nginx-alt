@@ -80,6 +80,7 @@ if [[ -e "$SSL_PATH/server.crt" ]] && [[ -e "$SSL_PATH/server.key" ]]; then
   if [[ -z "$SSL_VHOSTS" && "$SSL_HOSTNAME_STR" =~ www.* ]]; then
     SSL_VHOSTS=${SSL_HOSTNAME_STR#"www."}
     NONSSL_VHOSTS=`echo "$NONSSL_VHOSTS" | sed "s/$SSL_HOSTNAME\n*//g"`
+    echo "NONSSL_VHOSTS $NONSSL_VHOSTS"
   fi
 
   # For each domain that satisfies the SSL certificate, set up nginx under the
