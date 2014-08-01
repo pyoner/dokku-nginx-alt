@@ -81,7 +81,6 @@ if [[ -e "$SSL_PATH/server.crt" ]] && [[ -e "$SSL_PATH/server.key" ]]; then
     SSL_VHOSTS=${SSL_HOSTNAME_STR#"www."}
     SSL_VHOSTS_ESCAPED=`echo "$SSL_VHOSTS" | sed 's|\.|\\.|g' | sed 's/\*/\.\*/g'`
     NONSSL_VHOSTS=`echo "$NONSSL_VHOSTS" | sed "s/$SSL_VHOSTS_ESCAPED\n*//g"`
-    echo "NONSSL_VHOSTS $NONSSL_VHOSTS"
   fi
 
   # For each domain that satisfies the SSL certificate, set up nginx under the
@@ -120,7 +119,12 @@ echo $NONSSL_VHOSTS | xargs -i \
 # Then trim leading and trailing whitespace (xargs). If VHOST file is blank,
 # xargs reduces any whitespace to a blank string.
 SERVER_NAME=`echo $NONSSL_VHOSTS | tr '\n' ' ' | xargs`
-cat $NGINX_CONF | process_template >> $APP_PATH/nginx.conf
+if [[ -n "$SERVER_NAME" ]]; then
+  cat $NGINX_CONF | process_template >> $APP_PATH/nginx.conf
+else
+  NONSSL_VHOSTS=$SSL_VHOSTS
+fi
+
 
 # CRUDE HACK: Since the `URL` file only expects one app url, we take the
 # first  `$NONSSL_VHOSTS` domain and write it to `URL`.
