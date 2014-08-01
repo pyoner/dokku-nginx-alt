@@ -77,8 +77,7 @@ if [[ -e "$SSL_PATH/server.crt" ]] && [[ -e "$SSL_PATH/server.key" ]]; then
   # VHOST contains example.com
   # SSL_HOSTNAME_STR equal www.example.com
   # need create ssl nginx.conf for example.com (not for www.example.com)
-  echo "SSL_HOSTNAME_STR = $SSL_HOSTNAME_STR"
-  if [[ -z "$SSL_VHOSTS" && $SSL_HOSTNAME_STR == "www.*" ]]; then
+  if [[ -z "$SSL_VHOSTS" && "$SSL_HOSTNAME_STR" =~ www.* ]]; then
     SSL_VHOSTS=${SSL_HOSTNAME_STR#"www."}
     NONSSL_VHOSTS=${NONSSL_VHOSTS/$SSL_HOSTNAME/""}
   fi
